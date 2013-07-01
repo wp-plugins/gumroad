@@ -1,6 +1,6 @@
 <?php
 /**
- * Gumroad Overlay
+ * Gumroad Purchase Page Overlay
  *
  * @package		GUM
  * @author		Phil Derksen <pderksen@gmail.com>, Nick Young <mycorpweb@gmail.com>
