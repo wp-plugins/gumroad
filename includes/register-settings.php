@@ -1,18 +1,16 @@
 <?php
-	/**
-	* Register Settings
-	*
-	* @package GUM     
-	* @subpackage
-	* @copyright   Copyright (c) 2013, 
-	* @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
-	* @since       1.0
-    */
 
-// If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
+/**
+ * Register Settings
+ *
+ * @package    GUM
+ * @subpackage Views
+ * @author     Phil Derksen <pderksen@gmail.com>, Nick Young <mycorpweb@gmail.com>
+*/
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) )
+	exit;
 
 function gum_register_settings() {
 	$gum_settings = array(
@@ -24,19 +22,13 @@ function gum_register_settings() {
 			  'desc' => '',
 			  'type' => 'multicheck',
 			  'options' => array(
-				 'blog_home_page' => array(
-					'label' => __( 'Blog Home Page (or Latest Posts Page)', 'gum' ),
-					'value' => 1
-				),
-				 'archives' => array(
-					'label' => __( 'Archives (includes Category, Tag, Author, and date-based pages', 'gum' ),
-					'value' => 1
-				)
+				  'blog_home_page' => __( 'Blog Home Page (or Latest Posts Page)', 'gum' ),
+				  'archives' => __( 'Archives (includes Category, Tag, Author, and date-based pages', 'gum' )
 			  )
 		   )
 	    )
 	);
-	
+
 	/* If the options do not exist then create them for each section */
 	if ( false == get_option( 'gum_settings_general' ) ) {
 		add_option( 'gum_settings_general' );
@@ -75,7 +67,6 @@ function gum_register_settings() {
 }
 add_action( 'admin_init', 'gum_register_settings' );
 
-
 /*
  * Multiple checkboxes callback function
  */
@@ -83,11 +74,12 @@ add_action( 'admin_init', 'gum_register_settings' );
 function gum_multicheck_callback( $args ) {
 	global $gum_options;
 
-	foreach( $args['options'] as $key => $option ):
-		if( isset( $gum_options[$args['id']][$key] ) ) { $enabled = $option; } else { $enabled = NULL; }
-		echo '<input name="gum_settings_' . $args['section'] . '[' . $args['id'] . '][' . $key . ']"" id="gum_settings_' . $args['section'] . '[' . $args['id'] . '][' . $key . ']" type="checkbox" value="' . $option['value'] . '" ' . checked($option, $enabled, false) . '/>&nbsp;';
-		echo '<label for="gum_settings_' . $args['section'] . '[' . $args['id'] . '][' . $key . ']">' . $option['label'] . '</label><br/>';
-	endforeach;
+	foreach ( $args['options'] as $key => $option ) {
+		if ( isset( $gum_options[$args['id']][$key] ) ) { $enabled = $option; } else { $enabled = NULL; }
+		echo '<input name="gum_settings_' . $args['section'] . '[' . $args['id'] . '][' . $key . ']" id="gum_settings_' . $args['section'] . '[' . $args['id'] . '][' . $key . ']" type="checkbox" value="' . $option . '" ' . checked($option, $enabled, false) . '/>&nbsp;';
+		echo '<label for="gum_settings_' . $args['section'] . '[' . $args['id'] . '][' . $key . ']">' . $option . '</label><br/>';
+	}
+
 	echo '<p class="description">' . $args['desc'] . '</p>';
 }
 
@@ -103,7 +95,7 @@ function gum_settings_sanitize( $input ) {
  *  Default callback function if correct one does not exist
  */
 
-function gum_missing_callback() {
+function gum_missing_callback( $args ) {
 	printf( __( 'The callback function used for the <strong>%s</strong> setting is missing.', 'gum' ), $args['id'] );
 }
 

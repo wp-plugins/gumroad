@@ -1,12 +1,10 @@
 <?php
+
 /**
  * Fired when the plugin is uninstalled.
  *
- * @package   GUM
- * @author    Phil Derksen <pderksen@gmail.com>, Nick Young <mycorpweb@gmail.com>
- * @license   GPL-2.0+
- * @link      http://example.com
- * @copyright 2013 Your Name or Company Name
+ * @package GUM
+ * @author  Phil Derksen <pderksen@gmail.com>, Nick Young <mycorpweb@gmail.com>
  */
 
 // If uninstall, not called from WordPress, then exit
@@ -16,10 +14,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 // Remove option records from options table
 delete_option( 'gum_settings_general' );
+delete_option( 'gum_show_admin_install_notice' );
 
 // Remove custom post meta fields
-$posts = get_posts( array( 'numberposts' => -1 ) );
-
-foreach( $posts as $post ) {
-	delete_post_meta( $post->ID, '_gum_enabled' );
-}
+delete_post_meta_by_key( '_gum_enabled' );
