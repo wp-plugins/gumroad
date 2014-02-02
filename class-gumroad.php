@@ -20,7 +20,7 @@ class Gumroad {
 	 *
 	 * @var     string
 	 */
-	protected $version = '1.0.1';
+	protected $version = '1.1.0';
 
 	/**
 	 * Unique identifier for your plugin.
@@ -58,8 +58,12 @@ class Gumroad {
 	 * @since     1.0.0
 	 */
 	private function __construct() {
+		
+		// Load plugin text domain
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		
 		// Include required files.
-		$this->includes();
+		add_action( 'init', array( $this, 'includes' ), 1 );
 
 		// Add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ), 2 );
@@ -67,20 +71,39 @@ class Gumroad {
 		// Enqueue admin styles and scripts.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
 
-		// Load public-facing style sheet and JavaScript.
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
 		// Add admin notice after plugin activation. Also check if should be hidden.
 		add_action( 'admin_notices', array( $this, 'admin_install_notice' ) );
 
-		// Add Post Meta stuff.
-		add_action( 'add_meta_boxes', array( $this, 'call_meta_boxes') );
-		add_action( 'save_post', array( $this, 'save_meta_data') );
-
 		// Add plugin listing "Settings" action link.
 		add_filter( 'plugin_action_links_' . plugin_basename( plugin_dir_path( __FILE__ ) . $this->plugin_slug . '.php' ), array( $this, 'settings_link' ) );
+		
+		// Set our plugin constants
+		add_action( 'init', array( $this, 'setup_constants' ) );
 	}
+	
+	/**
+	 * Setup any plugin constants we need 
+	 *
+	 * @since    1.1.0
+	 */
+	public function setup_constants() {
+		define( 'GUM_PLUGIN_SLUG', $this->plugin_slug );
+	}
+	
+	/**
+	 * Load the plugin text domain for translation.
+	 *
+	 * @since    1.1.0
+	 */
+	public function load_plugin_textdomain() {
 
+		$domain = $this->plugin_slug;
+		$locale = apply_filters( 'plugin_locale', get_locale(), 'gum' );
+
+		load_textdomain( $domain, trailingslashit( WP_LANG_DIR ) . $domain . '/' . $domain . '-' . $locale . '.mo' );
+
+	}
+	
 	/**
 	 * Return an instance of this class.
 	 *
@@ -111,39 +134,6 @@ class Gumroad {
 	}
 
 	/**
-	 * Register and enqueues public-facing JavaScript files.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_scripts() {
-		global $post;
-		global $gum_options;
-		
-		$gum_meta = get_post_meta( $post->ID, '_gum_enabled', true );
-		$load_script = 0;
-		
-		if( isset( $gum_options['show_on'] ) ) 
-			$show_on = $gum_options['show_on'];
-		
-		if ( empty( $show_on['blog_home_page'] ) && is_home() )
-			return;
-		else if ( ! empty( $show_on['blog_home_page'] ) && is_home() )
-			$load_script = 1;
-
-		if ( empty( $show_on['archives'] ) && is_archive() )
-			return;
-		else if ( ! empty( $show_on['archives'] ) && is_archive() )
-			$load_script = 1;
-		
-		if ( $gum_meta )
-			$load_script = 1;
-		
-		if ( $load_script )
-			// Enqueue Gumroad JS plugin boilerplate style. Don't set a version.
-			wp_enqueue_script( $this->plugin_slug . '-overlay-script', 'https://gumroad.com/js/gumroad.js', array(), null, true );
-	}
-
-	/**
 	 * Register the administration menu for this plugin into the WordPress Dashboard menu.
 	 *
 	 * @since    1.0.0
@@ -151,7 +141,7 @@ class Gumroad {
 	public function add_plugin_admin_menu() {
 
 		$this->plugin_screen_hook_suffix = add_options_page(
-			$this->get_plugin_title() . __( ' Settings', 'gum' ),
+			$this->get_plugin_title() . __( ' Help', 'gum' ),
 			__( 'Gumroad', 'gum' ),
 			'manage_options',
 			$this->plugin_slug,
@@ -173,16 +163,13 @@ class Gumroad {
 	 *
 	 * @since     1.0.1
 	 */
-	private function includes() {
-		// Load global options.
-		global $gum_options;
-
-		// Include the file to register all of the plugin settings.
-		include_once( 'includes/register-settings.php' );
-
-		// Load global options settings.
-		$gum_options = gum_get_settings();
+	public function includes() {
 		
+		// Include any necessary functions
+		include_once( 'includes/misc-functions.php' );
+		
+		// Include shortcode functions
+		include_once( 'includes/shortcodes.php' );
 	}
 
 	/**
@@ -193,7 +180,7 @@ class Gumroad {
 	 * @return    string
 	 */
 	public static function get_plugin_title() {
-		return __( 'Gumroad Purchase Page Overlay', 'gum' );
+		return __( 'Gumroad Overlay & Embed', 'gum' );
 	}
 
 	/**
@@ -215,55 +202,6 @@ class Gumroad {
 			// Plugin admin CSS. Tack on plugin version.
 			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'css/admin.css', __FILE__ ), array( $this->plugin_slug .'-flat-ui' ), $this->version );
 		}
-	}
-
-	/*
-	 * Add the post meta boxes and callback function to print the HTML
-	 * Reference: http://www.wproots.com/complex-meta-boxes-in-wordpress/
-	 * 
-	 * @since    1.0.0
-	 */
-	public function call_meta_boxes() {
-		global $post;
-
-		//Loop through to make sure custom post types are enabled
-		$post_type = $post->post_type;
-		
-		add_meta_box('gum-meta', 'Gumroad', 'display_meta_box', $post_type, 'side', 'core');
-
-		function display_meta_box( $post ) {
-			$gum_meta = get_post_meta( $post->ID, '_gum_enabled', true );
-
-			wp_nonce_field( basename( __FILE__ ), 'gum_enabled_nonce' );
-			?>
-			<p>
-				<input type="checkbox" name="gum_enabled" <?php checked( $gum_meta, 'on', 1 ); ?> />
-				<label for="gum_enabled"><?php echo __( 'Enable Gumroad overlay on this individual post/page URL.', 'gum' ); ?></label>
-			</p>
-			<?php
-		}
-	}
-
-	/*
-	 * Save the post meta
-	 * 
-	 * @since    1.0.0
-	 */
-	public function save_meta_data( $post_id ) {
-
-		if ( ! isset( $_POST['gum_enabled_nonce'] ) || ! wp_verify_nonce ( $_POST['gum_enabled_nonce'], basename( __FILE__ ) ) )
-			return $post_id;
-		
-		if ( ! current_user_can( 'edit_post', $post_id ) )
-			return $post_id;
-		
-		if ( isset( $_POST['gum_enabled'] ) ) {
-			update_post_meta( $post_id, '_gum_enabled', $_POST['gum_enabled'] );
-		} else {
-			delete_post_meta( $post_id, '_gum_enabled' );
-		}
-
-		return $post_id;
 	}
 
 	/**

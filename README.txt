@@ -1,61 +1,82 @@
-=== Gumroad Purchase Page Overlay ===
+=== Gumroad Overlay & Embed ===
 Contributors: pderksen, nickyoung87
-Tags: gumroad, gumroad purchase pages, gumroad overlay, ecommerce, e-commerce, pdf, javascript, embed
-Requires at least: 3.4.2
-Tested up to: 3.6.1
+Tags: gumroad, gumroad purchase pages, gumroad overlay, gumroad embed, ecommerce, e-commerce, pdf, javascript, overlay, embed
+Requires at least: 3.5.2
+Tested up to: 3.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Display your Gumroad purchase pages in a pretty lightbox overlay.
+Display your Gumroad purchase pages in a pretty lightbox or embed them right on your pages using shortcodes.
 
 == Description ==
 
-The Gumroad overlay lets you bring in the Gumroad purchase pages right onto your site, so that transactions can happen inline — in a pretty Gumroad lightbox — without ruining the browsing experience for your customers (taken from the official [Gumroad overlay documentation](https://gumroad.com/overlay)).
+This plugin lets you bring in the Gumroad purchase pages right onto your site, so that transactions can happen inline — without ruining the browsing experience for your customers.
 
-This plugin simply embeds the Gumroad JavaScript snippet on the posts or pages you specify. Just check the box along the right sidebar when editing a post or page.
+The overlay option pops up the purchase form in a pretty lightbox.
 
-You can also enable Gumroad on the home page or archive pages where multiple posts are shown. Just look under Settings in your WordPress dashboard.
+The embed option shows the product purchase form directly on your page.
 
-Now just add links to your Gumroad products on your posts and pages (i.e. `http://gum.co/demo`).
+Shortcode examples:
 
-[Follow this project on Github](https://github.com/pderksen/WP-Gumroad).
+`[gumroad id="demo"]`
+`[gumroad id="demo" type="embed"]`
+`[gumroad id="demo" text="Purchase Item" wanted="true"]`
+
+Full shortcode documentation is in Settings > Gumroad after plugin is activated.
+
+This project is also on [Github](https://github.com/pderksen/WP-Gumroad).
 
 == Installation ==
 
-**Finding and installing through the WordPress admin:**
+= 1. Admin Search =
+1. In your Admin, go to menu Plugins > Add.
+1. Search for `Gumroad`.
+1. Find the plugin that's labeled `Gumroad Overlay & Embed`.
+1. Look for the author name `Phil Derksen` on the plugin.
+1. Click to install.
+1. Activate the plugin.
+1. A new menu item `Gumroad` will appear under your Settings menu option.
 
-1. If searching for this plugin in your WordPress admin, under Plugins > Add New search for "gumroad".
-1. Find the plugin that's labeled **Gumroad Purchase Page Overlay**.
-1. Also look for the author name **Phil Derksen**.
-1. Click "Install Now", then Activate, then head to Settings > Gumroad.
+= 2. Download & Upload =
+1. Download the plugin (a zip file) on the right column of this page.
+1. In your Admin, go to menu Plugins > Add.
+1. Select the tab "Upload".
+1. Upload the .zip file you just downloaded.
+1. Activate the plugin.
+1. A new menu item `Gumroad` will appear under your Settings menu option.
 
-**Alternative installation methods:**
-
-* Download this plugin, then upload through the WordPress admin (Plugins > Add New > Upload)
-* Download this plugin, unzip the contents, then FTP upload to the `/wp-content/plugins/` directory
+= 3. FTP Upload =
+1. Download the plugin (.zip file) on the right column of this page.
+1. Unzip the zip file contents.
+1. Upload the `gumroad` folder to the `/wp-content/plugins/` directory of your site.
+1. Activate the plugin through the 'Plugins' menu in WordPress.
+1. A new menu item `Gumroad` will appear under your Settings menu option.
 
 == Frequently Asked Questions ==
 
-= Troubleshooting =
-
-From the official [Gumroad overlay documentation](https://gumroad.com/overlay):
-
-If the overlay doesn't get triggered on click (and your browser is redirected to a gumroad.com URL), please make sure that there is not extra code that is hijacking the click event (for example, a Google Analytics onclick event).
-
-A popular known plugin that does this is **Google Analytics for WordPress**. Try unchecking one or both of these options: 1) Track outbound clicks & downloads, 2) Check Advanced Settings, then make sure "Track outbound clicks as pageviews" is un-checked.
+Full shortcode documentation is in Settings > Gumroad after plugin is activated.
 
 Your theme must implement **wp_footer()** in the footer.php file, otherwise JavaScript will not load correctly. You can test if this is the issue by switching to a WordPress stock theme such as twenty-twelve temporarily.
 
-== Screenshots ==
+If the overlay doesn't get triggered on click (and your browser is redirected to a gumroad.com URL), please make sure that there is not extra code that is hijacking the click event (for example, a Google Analytics onclick event).
 
-1. Enabling Gumroad overlay JavaScript in the post sidebar.
-2. Gumroad purchase page overlay on top of a WordPress page.
-3. Gumroad overlay settings page (home/archive page options).
+A popular known plugin that does this is "Google Analytics for WordPress". Try unchecking one or both of these options: 1) Track outbound clicks & downloads, 2) Check Advanced Settings, then make sure "Track outbound clicks as pageviews" is un-checked.
+
+See the official Gumroad [overlay](https://gumroad.com/overlay) or [embed](https://gumroad.com/embed) documentation for further troubleshooting.
 
 == Changelog ==
 
+= 1.1.0 =
+
+* Added Gumroad embed purchase page option.
+* Plugin now uses only shortcodes to display Gumroad overlay or embed purchase pages.
+* Main settings options removed.
+* Post meta options removed.
+* Tested up to WordPress 3.8.
+
 = 1.0.1 =
+
 * Bug fixes.
 * Added settings link to plugin listing entry.
 * Added plugin activation notice.
@@ -63,4 +84,11 @@ Your theme must implement **wp_footer()** in the footer.php file, otherwise Java
 * Fixed PHP debug warnings.
 
 = 1.0.0 =
+
 * Initial release.
+
+== Upgrade Notice ==
+
+= 1.1.0 =
+
+After upgrading your previously saved Gumroad settings will no longer apply. This plugin now uses shortcodes only.

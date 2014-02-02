@@ -29,14 +29,14 @@ if ( ! defined( 'ABSPATH' ) )
 
 	<div class="sidebar-content">
 		<p>
-			<?php _e( 'Check out our Pinterest "Pin It" Button plugin. Now with over <strong>150,000</strong> downloads!', 'gum' ); ?>
+			<?php _e( 'Check out our Pinterest "Pin It" Button plugin. Now with over <strong>200,000</strong> downloads!', 'gum' ); ?>
 		</p>
 
 		<p class="small-text">
 			<a href="<?php echo add_query_arg( array(
-					'tab' => 'search',
-					'type' => 'author',
-					's' => 'pderksen'
+					'tab'  => 'search',
+					'type' => 'term',
+					's'    => urlencode('"pinterest pin it button"')
 				), admin_url( 'plugin-install.php' ) ); ?>" class="btn btn-small btn-block btn-danger">
 				<?php _e( 'Get the Free "Pin It" Button plugin', 'gum' ); ?></a><br/>
 			<a href="http://wordpress.org/plugins/pinterest-pin-it-button/" target="_blank"><?php _e( 'Visit the "Pin It" Button plugin page', 'gum' ); ?></a>
