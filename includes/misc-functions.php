@@ -41,3 +41,32 @@ function gum_load_js( $type ) {
 		wp_enqueue_script( GUM_PLUGIN_SLUG . '-overlay-script', 'https://gumroad.com/js/gumroad.js', array(), null, false );
 	}
 }
+
+/**
+ * Function to return the number of PIB Lite downloads from wordpress.org
+ * 
+ * @since 1.1.0
+ * 
+ */
+function gum_get_pib_downloads() {
+	
+	require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+	
+	$plugin_info = plugins_api( 'plugin_information', array( 'slug' => 'pinterest-pin-it-button' ) );
+	
+	return number_format_i18n( $plugin_info->downloaded );
+}
+
+/**
+ * Function to check if PIB Lite or PIB Pro are active
+ * 
+ * @since 1.1.0
+ * 
+ * @return bool
+ */
+function gum_is_pib_active() {
+	if( class_exists( 'Pinterest_Pin_It_Button' ) || class_exists( 'Pinterest_Pin_It_Button_Pro' ) ) 
+		return true;
+	
+	return false;
+}

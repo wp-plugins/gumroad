@@ -60,7 +60,7 @@ class Gumroad {
 	private function __construct() {
 		
 		// Load plugin text domain
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		add_action( 'plugins_loaded', array( $this, 'plugin_textdomain' ) );
 		
 		// Include required files.
 		add_action( 'init', array( $this, 'includes' ), 1 );
@@ -79,6 +79,25 @@ class Gumroad {
 		
 		// Set our plugin constants
 		add_action( 'init', array( $this, 'setup_constants' ) );
+		
+		// Check WP version
+		add_action( 'admin_init', array( $this, 'check_wp_version' ) );
+	}
+	
+	/**
+	 * Make sure user has the minimum required version of WordPress installed to use the plugin
+	 * 
+	 * @since 1.0.0
+	 */
+	public function check_wp_version() {
+		global $wp_version;
+		$required_wp_version = '3.5.2';
+		
+		if ( version_compare( $wp_version, $required_wp_version, '<' ) ) {
+			deactivate_plugins( GUM_MAIN_FILE ); 
+			wp_die( sprintf( __( $this->get_plugin_title() . ' requires WordPress version <strong>' . $required_wp_version . '</strong> to run properly. ' .
+				'Please update WordPress before reactivating this plugin. <a href="%s">Return to Plugins</a>.', 'gum' ), get_admin_url( '', 'plugins.php' ) ) );
+		}
 	}
 	
 	/**
@@ -95,12 +114,27 @@ class Gumroad {
 	 *
 	 * @since    1.1.0
 	 */
-	public function load_plugin_textdomain() {
+	public function plugin_textdomain() {
+		// Set filter for plugin's languages directory
+		$gum_lang_dir = dirname( plugin_basename( GUM_MAIN_FILE ) ) . '/languages/';
+		$gum_lang_dir = apply_filters( 'gum_languages_directory', $gum_lang_dir );
 
-		$domain = $this->plugin_slug;
-		$locale = apply_filters( 'plugin_locale', get_locale(), 'gum' );
+		// Traditional WordPress plugin locale filter
+		$locale        = apply_filters( 'plugin_locale',  get_locale(), 'gum' );
+		$mofile        = sprintf( '%1$s-%2$s.mo', 'gum', $locale );
 
-		load_textdomain( $domain, trailingslashit( WP_LANG_DIR ) . $domain . '/' . $domain . '-' . $locale . '.mo' );
+		// Setup paths to current locale file
+		$mofile_local  = $gum_lang_dir . $mofile;
+		$mofile_global = WP_LANG_DIR . '/gum/' . $mofile;
+
+		if ( file_exists( $mofile_global ) ) {
+			load_textdomain( 'gum', $mofile_global );
+		} elseif ( file_exists( $mofile_local ) ) {
+			load_textdomain( 'gum', $mofile_local );
+		} else {
+			// Load the default language files
+			load_plugin_textdomain( 'gum', false, $gum_lang_dir );
+		}
 
 	}
 	

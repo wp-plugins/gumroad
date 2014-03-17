@@ -24,12 +24,13 @@ if ( ! defined( 'ABSPATH' ) )
 	</div>
 </div>
 
+<?php if( !gum_is_pib_active() ) { ?>
 <div class="sidebar-container">
 	<h3 class="sidebar-title-large"><?php _e( 'Need more Pinterest traffic?', 'gum' ); ?></h3>
 
 	<div class="sidebar-content">
 		<p>
-			<?php _e( 'Check out our Pinterest "Pin It" Button plugin. Now with over <strong>200,000</strong> downloads!', 'gum' ); ?>
+			<?php _e( 'Check out our Pinterest "Pin It" Button plugin. Now with <strong>' . gum_get_pib_downloads() . '</strong> downloads!', 'gum' ); ?>
 		</p>
 
 		<p class="small-text">
@@ -43,3 +44,4 @@ if ( ! defined( 'ABSPATH' ) )
 		</p>
 	</div>
 </div>
+<?php } ?>
