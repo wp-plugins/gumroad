@@ -8,8 +8,9 @@
  */
 
 // Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) )
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
 
 class Gumroad {
 
@@ -20,7 +21,7 @@ class Gumroad {
 	 *
 	 * @var     string
 	 */
-	protected $version = '1.1.1';
+	protected $version = '1.1.2';
 
 	/**
 	 * Unique identifier for your plugin.
