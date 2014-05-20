@@ -215,7 +215,7 @@ class Gumroad {
 	 * @return    string
 	 */
 	public static function get_plugin_title() {
-		return __( 'Gumroad Overlay & Embed', 'gum' );
+		return __( 'Gumroad Product Pages', 'gum' );
 	}
 
 	/**
@@ -228,14 +228,8 @@ class Gumroad {
 	public function enqueue_admin_styles() {
 
 		if ( $this->viewing_this_plugin() ) {
-			// Plugin admin custom Bootstrap CSS. Tack on plugin version.
-			wp_enqueue_style( $this->plugin_slug .'-bootstrap', plugins_url( 'css/bootstrap-custom.css', __FILE__ ), array(), $this->version );
-
-			// Plugin admin custom Flat UI CSS. Tack on plugin version.
-			wp_enqueue_style( $this->plugin_slug .'-flat-ui', plugins_url( 'css/flat-ui-custom.css', __FILE__ ), array( $this->plugin_slug .'-bootstrap' ), $this->version );
-
 			// Plugin admin CSS. Tack on plugin version.
-			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'css/admin.css', __FILE__ ), array( $this->plugin_slug .'-flat-ui' ), $this->version );
+			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'css/admin.css', __FILE__ ), array(), $this->version );
 		}
 	}
 
@@ -285,11 +279,15 @@ class Gumroad {
 		if ( false == get_option( 'gum_show_admin_install_notice' ) )
 			return;
 
-		// At this point show install notice.
-		include_once( 'views/admin-install-notice.php' );
+		// Delete stored value if "hide" button click detected (custom querystring value set to 1).
+		// or if on a PIB admin page. Then exit.
+		if ( ! empty( $_REQUEST['gum-dismiss-install-nag'] ) || $this->viewing_this_plugin() ) {
+			delete_option( 'gum_show_admin_install_notice' );
+			return;
+		}
 
-		// Delete stored value to hide since we only want them to view it once.
-		delete_option( 'gum_show_admin_install_notice' );
-		return;
+		// At this point show install notice. Show it only on the plugin screen.
+		if( get_current_screen()->id == 'plugins' )
+			include_once( 'views/admin-install-notice.php' );
 	}
 }
