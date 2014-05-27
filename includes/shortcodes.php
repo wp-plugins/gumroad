@@ -19,20 +19,26 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function gum_gumroad_shortcode( $attr ) {
 	
-	extract( shortcode_atts( array(
+	$defaults = array(
 					'id'     => '',
 					'type'   => 'overlay',
 					'text'   => 'Buy Now',
-					'wanted' => 'false'
-				), $attr ) );
+					'wanted' => 'false',
+					'locale' => 'false'
+				);
+	
+	
+	extract( shortcode_atts( $defaults, $attr ) );
 	
 	gum_load_js( $type );
+	
+	$attr = array_merge( $defaults, $attr );
 	
 	if( ! empty( $id ) ) {
 		if( $type == 'embed' ) {
 			$html = gum_embed_button( $id );
 		} else {
-			$html = gum_overlay_button( $id, $text, $wanted );
+			$html = gum_overlay_button( $attr );
 		}
 		
 		$before_html = '';
