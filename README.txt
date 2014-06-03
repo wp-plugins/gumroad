@@ -25,6 +25,8 @@ Shortcode examples:
 
 Full shortcode documentation is in Settings > Gumroad after plugin is activated.
 
+Spanish translation by Andrew Kurtis of [webhostinghub.com](http://www.webhostinghub.com/).
+
 [Follow this project on Github](https://github.com/pderksen/WP-Gumroad).
 
 == Installation ==
@@ -64,8 +66,6 @@ If the overlay doesn't get triggered on click (and your browser is redirected to
 A popular known plugin that does this is "Google Analytics for WordPress". Try unchecking one or both of these options: 1) Track outbound clicks & downloads, 2) Check Advanced Settings, then make sure "Track outbound clicks as pageviews" is un-checked.
 
 See the official Gumroad [overlay](https://gumroad.com/overlay) or [embed](https://gumroad.com/embed) documentation for further troubleshooting.
-
-Spanish translation by Andrew Kurtis of [webhostinghub.com](http://www.webhostinghub.com/).
 
 == Changelog ==
 
