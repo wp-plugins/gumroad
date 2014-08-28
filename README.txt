@@ -1,33 +1,46 @@
-=== Gumroad Product Pages ===
-Contributors: pderksen, nickyoung87
+=== Official Gumroad Wordpress Plugin ===
+Contributors: pderksen, nickyoung87, gumroad
 Tags: gumroad, gumroad product pages, gumroad overlay, gumroad embed, ecommerce, e-commerce, pdf, javascript, overlay, embed
 Requires at least: 3.6.1
-Tested up to: 3.9
+Tested up to: 4.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Display your Gumroad product pages in a pretty lightbox or embed them right in your posts using shortcodes.
+Display your Gumroad products right on your Wordpress page.
 
 == Description ==
 
-This plugin lets you bring in the Gumroad product pages right onto your site, so that transactions can happen inline — without ruining the browsing experience for your customers.
+This plugin lets you embed, https://gumroad.com/embed, or overlay, https://gumroad.com/overlay, your Gumroad purchase pages with little to no coding effort.
 
-The overlay option pops up the purchase form in a pretty lightbox.
+The Gumroad overlay lets you bring in the Gumroad purchase pages right onto your site, so that transactions can happen inline — in a pretty Gumroad lightbox:
 
-The embed option shows the product purchase form directly on your page.
+http://www.youtube.com/watch?v=R8r6LBKkKoQ
 
-Shortcode examples:
+The Gumroad embed lets you bring in Gumroad products right onto your site, so that transactions can happen inline (*Gumroad embed requires HTTPS to work!* [Here is a Wordpress plugin that assists in HTTPS setup](http://wordpress.org/plugins/wordpress-https/)):
 
-`[gumroad id="demo"]`
-`[gumroad id="demo" type="embed"]`
-`[gumroad id="demo" text="Purchase Item" wanted="true"]`
+http://www.youtube.com/watch?v=in9wzs3W7Ms
 
-Full shortcode documentation is in Settings > Gumroad after plugin is activated.
+Examples:
+
+Basic overlay example:
+`[gumroad id="DviQY"]`
+
+Basic embed example:
+`[gumroad id="GAPdj" type="embed"]`
+
+Overlay that will automatically show the payment form:
+`[gumroad id="DviQY" text="Purchase Item" wanted="true"]`
+
+*"Where do I find my product's id?"*:
+
+http://www.youtube.com/watch?v=IZl4lAnai50
+
+See full the full documentation in Settings > Gumroad after plugin is activated.
 
 Spanish translation by Andrew Kurtis of [webhostinghub.com](http://www.webhostinghub.com/).
 
-[Follow this project on Github](https://github.com/pderksen/WP-Gumroad).
+[Follow this project on Github](https://github.com/gumroad/WP-Gumroad).
 
 == Installation ==
 
@@ -35,7 +48,7 @@ Spanish translation by Andrew Kurtis of [webhostinghub.com](http://www.webhostin
 1. In your Admin, go to menu Plugins > Add.
 1. Search for `Gumroad`.
 1. Find the plugin that's labeled `Gumroad Overlay & Embed`.
-1. Look for the author name `Phil Derksen` on the plugin.
+1. Look for the author name `Gumroad` on the plugin.
 1. Click to install.
 1. Activate the plugin.
 1. A new menu item `Gumroad` will appear under your Settings menu option.
@@ -57,8 +70,6 @@ Spanish translation by Andrew Kurtis of [webhostinghub.com](http://www.webhostin
 
 == Frequently Asked Questions ==
 
-Full shortcode documentation is in Settings > Gumroad after plugin is activated.
-
 Your theme must implement **wp_footer()** in the footer.php file, otherwise JavaScript will not load correctly. You can test if this is the issue by switching to a WordPress stock theme such as twenty-twelve temporarily.
 
 If the overlay doesn't get triggered on click (and your browser is redirected to a gumroad.com URL), please make sure that there is not extra code that is hijacking the click event (for example, a Google Analytics onclick event).
@@ -67,7 +78,19 @@ A popular known plugin that does this is "Google Analytics for WordPress". Try u
 
 See the official Gumroad [overlay](https://gumroad.com/overlay) or [embed](https://gumroad.com/embed) documentation for further troubleshooting.
 
+== Screenshots ==
+
+1. Simple Overlay example
+
+2. Simple Embed example
+
 == Changelog ==
+
+= 1.1.5 = 
+
+* Videos added to in-plugin help page.
+* Demo videos added to Readme.txt.
+* Tested with WordPress 4.0.
 
 = 1.1.4 =
 
@@ -105,9 +128,3 @@ See the official Gumroad [overlay](https://gumroad.com/overlay) or [embed](https
 = 1.0.0 =
 
 * Initial release.
-
-== Upgrade Notice ==
-
-= 1.1.0 =
-
-After upgrading your previously saved Gumroad settings will no longer apply. This plugin now uses shortcodes only.

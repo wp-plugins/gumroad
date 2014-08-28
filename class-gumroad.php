@@ -4,7 +4,7 @@
  * Main Gumroad class
  *
  * @package GUM
- * @author  Phil Derksen <pderksen@gmail.com>, Nick Young <mycorpweb@gmail.com>
+ * @author  Phil Derksen <pderksen@gmail.com>, Nick Young <mycorpweb@gmail.com>, Gumroad <maxwell@gumroad.com>
  */
 
 // Exit if accessed directly.
@@ -21,7 +21,7 @@ class Gumroad {
 	 *
 	 * @var     string
 	 */
-	protected $version = '1.1.3';
+	protected $version = '1.1.5';
 
 	/**
 	 * Unique identifier for your plugin.
@@ -215,7 +215,7 @@ class Gumroad {
 	 * @return    string
 	 */
 	public static function get_plugin_title() {
-		return __( 'Gumroad Product Pages', 'gum' );
+		return __( 'Gumroad', 'gum' );
 	}
 
 	/**
