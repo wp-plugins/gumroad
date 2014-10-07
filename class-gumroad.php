@@ -21,7 +21,7 @@ class Gumroad {
 	 *
 	 * @var     string
 	 */
-	protected $version = '1.1.5';
+	protected $version = '1.1.6';
 
 	/**
 	 * Unique identifier for your plugin.
@@ -72,33 +72,11 @@ class Gumroad {
 		// Enqueue admin styles and scripts.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
 
-		// Add admin notice after plugin activation. Also check if should be hidden.
-		add_action( 'admin_notices', array( $this, 'admin_install_notice' ) );
-
 		// Add plugin listing "Settings" action link.
 		add_filter( 'plugin_action_links_' . plugin_basename( plugin_dir_path( __FILE__ ) . $this->plugin_slug . '.php' ), array( $this, 'settings_link' ) );
 		
 		// Set our plugin constants
 		add_action( 'init', array( $this, 'setup_constants' ) );
-		
-		// Check WP version
-		add_action( 'admin_init', array( $this, 'check_wp_version' ) );
-	}
-	
-	/**
-	 * Make sure user has the minimum required version of WordPress installed to use the plugin
-	 * 
-	 * @since 1.0.0
-	 */
-	public function check_wp_version() {
-		global $wp_version;
-		$required_wp_version = '3.5.2';
-		
-		if ( version_compare( $wp_version, $required_wp_version, '<' ) ) {
-			deactivate_plugins( GUM_MAIN_FILE ); 
-			wp_die( sprintf( __( $this->get_plugin_title() . ' requires WordPress version <strong>' . $required_wp_version . '</strong> to run properly. ' .
-				'Please update WordPress before reactivating this plugin. <a href="%s">Return to Plugins</a>.', 'gum' ), get_admin_url( '', 'plugins.php' ) ) );
-		}
 	}
 	
 	/**
@@ -116,27 +94,11 @@ class Gumroad {
 	 * @since    1.1.0
 	 */
 	public function plugin_textdomain() {
-		// Set filter for plugin's languages directory
-		$gum_lang_dir = dirname( plugin_basename( GUM_MAIN_FILE ) ) . '/languages/';
-		$gum_lang_dir = apply_filters( 'gum_languages_directory', $gum_lang_dir );
-
-		// Traditional WordPress plugin locale filter
-		$locale        = apply_filters( 'plugin_locale',  get_locale(), 'gum' );
-		$mofile        = sprintf( '%1$s-%2$s.mo', 'gum', $locale );
-
-		// Setup paths to current locale file
-		$mofile_local  = $gum_lang_dir . $mofile;
-		$mofile_global = WP_LANG_DIR . '/gum/' . $mofile;
-
-		if ( file_exists( $mofile_global ) ) {
-			load_textdomain( 'gum', $mofile_global );
-		} elseif ( file_exists( $mofile_local ) ) {
-			load_textdomain( 'gum', $mofile_local );
-		} else {
-			// Load the default language files
-			load_plugin_textdomain( 'gum', false, $gum_lang_dir );
-		}
-
+		load_plugin_textdomain(
+			'gum',
+			false,
+			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+		);
 	}
 	
 	/**
@@ -164,8 +126,6 @@ class Gumroad {
 	 * @param    boolean    $network_wide    True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog.
 	 */
 	public static function activate( $network_wide ) {
-		// Add value to indicate that we should show admin install notice.
-		update_option( 'gum_show_admin_install_notice', 1 );
 	}
 
 	/**
@@ -176,8 +136,8 @@ class Gumroad {
 	public function add_plugin_admin_menu() {
 
 		$this->plugin_screen_hook_suffix = add_options_page(
-			$this->get_plugin_title() . __( ' Help', 'gum' ),
-			__( 'Gumroad', 'gum' ),
+			$this->get_plugin_title() . esc_html( ' Help', 'gum' ),
+			esc_html( 'Gumroad', 'gum' ),
 			'manage_options',
 			$this->plugin_slug,
 			array( $this, 'display_plugin_admin_page' )
@@ -215,7 +175,7 @@ class Gumroad {
 	 * @return    string
 	 */
 	public static function get_plugin_title() {
-		return __( 'Gumroad', 'gum' );
+		return esc_html( 'Gumroad', 'gum' );
 	}
 
 	/**
@@ -243,7 +203,7 @@ class Gumroad {
 	 */
 	public function settings_link( $links ) {
 
-		$setting_link = sprintf( '<a href="%s">%s</a>', add_query_arg( 'page', $this->plugin_slug, admin_url( 'options-general.php' ) ), __( 'Settings', 'gum' ) );
+		$setting_link = sprintf( '<a href="%s">%s</a>', add_query_arg( 'page', $this->plugin_slug, admin_url( 'options-general.php' ) ), esc_html( 'Settings', 'gum' ) );
 		array_unshift( $links, $setting_link );
 
 		return $links;
@@ -266,28 +226,5 @@ class Gumroad {
 			return true;
 		else
 			return false;
-	}
-
-	/**
-	 * Show notice after plugin install/activate in admin dashboard.
-	 * Hide after first viewing.
-	 *
-	 * @since   1.0.1
-	 */
-	public function admin_install_notice() {
-		// Exit all of this is stored value is false/0 or not set.
-		if ( false == get_option( 'gum_show_admin_install_notice' ) )
-			return;
-
-		// Delete stored value if "hide" button click detected (custom querystring value set to 1).
-		// or if on a PIB admin page. Then exit.
-		if ( ! empty( $_REQUEST['gum-dismiss-install-nag'] ) || $this->viewing_this_plugin() ) {
-			delete_option( 'gum_show_admin_install_notice' );
-			return;
-		}
-
-		// At this point show install notice. Show it only on the plugin screen.
-		if( get_current_screen()->id == 'plugins' )
-			include_once( 'views/admin-install-notice.php' );
 	}
 }
